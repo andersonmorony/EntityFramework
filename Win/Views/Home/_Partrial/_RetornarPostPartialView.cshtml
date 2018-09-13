@@ -1,0 +1,82 @@
+﻿@model Win.ViewModels.PostViewModel
+
+<!--AQUI É A VIEW DO MODAL QUANDO CLICADO-->
+<li class="list-group-item">
+    <div class="media">
+        <div class="media-left">
+            <a class="avatar avatar-online" href="javascript:void(0)">
+                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                <i></i>
+            </a>
+        </div>
+        <div class="media-body">
+            <small class="text-muted pull-right">@Model.DataPublicacao</small>
+            <h4 class="media-heading">@Model.applicationUser.UserName</h4>
+            <div>
+                @Html.Raw(Model.Texto)
+            </div>
+            <div class="col-md-12" id="botoesPost" style="margin-top: 20px;">
+                <div class="col-md-4 col-xs-4"><a class="comentar-r" data-postId="@Model.Id" href="#"><i class="far fa-comment-dots"></i> <span id="quantidadeComentario-@Model.Id" class="badge">@(Model.QuantidadeComentario.ToString() != "0" ? Model.QuantidadeComentario.ToString() : "")</span> </a></div>
+                <div class="col-md-4 col-xs-4">
+                    <a class="curtir-r" data-postId="@Model.Id" href="#">
+                        <i class="fas fa-heart"></i>
+                        <span class="badge quantidadecurtir-@Model.Id">@Model.Curtida.Count()</span>
+                    </a>
+                </div>
+                <div class="col-md-4 col-xs-4"><a class="compartilhar" data-postId="@Model.Id" href="#"><i class="fas fa-share-square"></i> </a></div>
+            </div>
+        </div>
+        <div id="comentarios-@Model.Id">
+            <div class="input-group inp-comentario">
+                <input type="hidden" name="postID" value="@Model.Id" />
+                <textarea type="text" class="form-control ckeditor" rows="1" name="Texto" id="texto-@Model.Id" placeholder="Comente alguma coisa..."></textarea>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary ladda-button comentarpost" data-size="1" data-style="zoom-in" data-spinner-color="#FFF"
+                            data-postid="@Model.Id" type="button">
+                        <span class="ladda-label">Comentar</span>
+                    </button>
+                </span>
+            </div><!-- /input-group -->
+
+            @foreach (var item in Model.Comentarios)
+            {
+                <button class="list-group-item btn-visualizarpost" data-postid="@item.Id" style="background-color: #efefef">
+                    <div class="media">
+                        <div class="media-left">
+                            <a class="avatar avatar-online" href="javascript:void(0)">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                                <i></i>
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <small class="text-muted pull-right">@item.DataPublicacao</small>
+                            <h4 class="media-heading">@item.applicationUser.UserName</h4>
+                            <div>
+                                @Html.Raw(item.Texto)
+                            </div>
+                            <div class="col-md-12" id="botoesPost" style="margin-top: 20px;">
+                                <div class="col-md-4 col-xs-4"><a class="comentar" data-postId="@item.Id" href="#"><i class="far fa-comment-dots"></i> <span id="quantidadeComentario-@item.Id" class="badge">@item.Comentarios.Count()</span>  </a></div>
+                                <div class="col-md-4 col-xs-4">
+                                    <a class="curtir" data-postId="@item.Id" href="#">
+                                        <i class="fas fa-heart"></i>
+                                        <span class="badge" id="quantidadeComentario-@item.Id">@item.Curtida.Count()</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-4 col-xs-4"><a class="compartilhar" data-postId="@item.Id" href="#"><i class="fas fa-share-square"></i> </a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </button>
+            }
+
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</li>
+
+
+<script src="~/js/recarregarPost.js"></script>
+<script src="~/js/comentario.js"></script>

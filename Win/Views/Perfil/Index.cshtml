@@ -1,0 +1,58 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_Perfil.cshtml";
+}
+
+
+<div class="container" style="margin-top: 70px;">
+
+
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-body" style="padding: 0px">
+                <div class="form-group">
+                <form method="Post" enctype="multipart/form-data" id="posst-form" asp-action="Postar" asp-controller="Home">
+                    <textarea class="form-control"  style="resize: none" rows="4" id="texto" placeholder="O que Você esta pensando?" onfocus="onfocus"></textarea>
+                    <input type="hidden" id="imagemSelecionada" />
+                </form>
+                </div>
+            </div>
+            <div class="panel-footer" style="background-color:#3ca2e0 ">
+                <button type="submit" id="enviar" class="btn btn-primary ladda-button pull-right btn-sm" data-style="zoom-in"><span class="ladda-label">Postar</span></button>
+                <ul class="nav nav-pills">
+
+                    <li>
+
+                        <a href="#"><i class="fa fa-map-marker"></i></a>
+
+                    </li>
+
+                    <li>
+                        <a href="#">
+
+                            <label for="file">
+                                <i class="fa fa-camera"></i>
+                            </label>
+                        </a>
+                        <input type="file" id="file" name="file" />
+
+                    </li>
+
+                    <li>
+
+                        <a href="#"><i class=" fa fa-film"></i></a>
+
+                    </li>
+
+                    <li>
+
+                        <a href="#"><i class="fa fa-microphone"></i></a>
+
+                    </li>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>

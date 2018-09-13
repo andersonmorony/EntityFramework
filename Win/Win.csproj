@@ -5,10 +5,28 @@
     <UserSecretsId>aspnet-Win-48E825AC-DBD1-438F-BC7E-77873EC21A2D</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180913154154_AddClassImagem.cs" />
+    <Compile Remove="Data\Migrations\20180913154514_Addimagem.cs" />
+    <Compile Remove="Data\Migrations\20180913154848_NewtableImagem.cs" />
+    <Compile Remove="Data\Migrations\20180913155049_AddimagemClass.cs" />
+    <Compile Remove="Data\Migrations\20180913155143_AddimagemClass.cs" />
+    <Compile Remove="Data\Migrations\20180913160515_AddTableImagem.cs" />
+    <Compile Remove="Data\Migrations\20180913183010_AddDateInImage.cs" />
+  </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="bower.json" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="CKEditor" Version="3.6.4" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" PrivateAssets="All" />
   </ItemGroup>
 
@@ -16,6 +34,15 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.2" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.1" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bower.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\imagens\perfil\" />
+    <Folder Include="wwwroot\uploads\imagens\posts\" />
   </ItemGroup>
 
 </Project>

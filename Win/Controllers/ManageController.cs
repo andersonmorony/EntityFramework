@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Win.Interfaces.Services;
 using Win.Models;
 using Win.Models.ManageViewModels;
 using Win.Services;
+using Win.ViewModels;
 
 namespace Win.Controllers
 {
@@ -25,7 +30,8 @@ namespace Win.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
-
+        private IPostService _postService;
+        private IUsuarioService _usuarioService;
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
 
@@ -34,20 +40,70 @@ namespace Win.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
-          UrlEncoder urlEncoder)
+          UrlEncoder urlEncoder,
+          IPostService postService,
+          IUsuarioService usuarioService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             _urlEncoder = urlEncoder;
+            _postService = postService;
+            _usuarioService = usuarioService;
         }
 
         [TempData]
         public string StatusMessage { get; set; }
 
+
+
         [HttpGet]
         public async Task<IActionResult> Index()
+        {
+            var idUsuario = _userManager.GetUserId(User);
+
+            var model = new FeedViewModel();
+            model.ApplicationUserId = idUsuario;
+            var posts = _postService.PostsPorUsuario(model);
+            
+            
+            model.Posts = Mapper.Map<List<PostViewModel>>(posts);
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult CarregarFeed(FeedViewModel model)
+        {
+            model.ApplicationUserId = _userManager.GetUserId(User);
+
+            var posts = _postService.PostsPorUsuario(model);
+
+            if (posts.Count() == 0)
+            {
+                return BadRequest("no posts");
+            }
+
+            var newPosts = Mapper.Map<List<PostViewModel>>(posts);
+
+            var newRotorno = new FeedViewModel()
+            {
+                Posts = newPosts,
+
+            };
+
+            foreach (var item in newRotorno.Posts)
+            {
+                item.QuantidadeComentario = item.Comentarios.Count();
+                item.QuantidadeCurtida = item.Curtida.Count();
+            }
+
+            return PartialView("../Home/_Partrial/_RecarregarPostPartialView", newRotorno);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Perfil()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -57,6 +113,8 @@ namespace Win.Controllers
 
             var model = new IndexViewModel
             {
+                Nome = user.Nome,
+                Sobrenome = user.Sobrenome,
                 Username = user.UserName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
@@ -69,7 +127,7 @@ namespace Win.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(IndexViewModel model)
+        public async Task<IActionResult> Perfil(IndexViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -81,29 +139,62 @@ namespace Win.Controllers
             {
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
-            var email = user.Email;
-            if (model.Email != email)
+            if(model.Email != null)
             {
-                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
-                if (!setEmailResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
-                }
+                user.Email = model.Email;
+            }
+            if(model.Nome != null)
+            {
+                user.Nome = model.Nome;
+
+            }
+            if (model.Sobrenome != null)
+            {
+                user.Sobrenome = model.Sobrenome;
+
+            }
+            if(model.PhoneNumber != null)
+            {
+                user.PhoneNumber = model.PhoneNumber;
             }
 
-            var phoneNumber = user.PhoneNumber;
-            if (model.PhoneNumber != phoneNumber)
+
+            var result = await _userManager.UpdateAsync(user);
+
+
+            StatusMessage = "Usuário atualizado com sucesso!";
+            return RedirectToAction(nameof(Perfil));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> fotoPerfil(IFormFile file)
+        {
+            var tempoAtual = DateTime.Now;
+            var saltImg = String.Format("{0:yyyyMMdd-HHmmssfff}", DateTime.Now);
+            var fileName = string.Concat(saltImg, file.FileName);
+            var path = Path.Combine(
+                        Directory.GetCurrentDirectory(), "wwwroot/uploads/imagens/perfil",
+                        fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
+                await file.CopyToAsync(stream);
             }
 
-            StatusMessage = "Your profile has been updated";
-            return RedirectToAction(nameof(Index));
+            var user = await _userManager.GetUserAsync(User);
+
+            var img = new ImagemPerfil()
+            {
+                ApplicationUserId = user.Id,
+                NomeImagem = fileName
+            };
+
+            _usuarioService.UploadImagem(img);
+
+            await _userManager.UpdateAsync(user);
+
+            return Ok("/uploads/imagens/perfil/"+fileName);
+
         }
 
         [HttpPost]

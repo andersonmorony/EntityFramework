@@ -1,0 +1,47 @@
+﻿@model Win.ViewModels.FeedViewModel
+
+@foreach (var item in Model.Posts)
+{
+
+<li class="list-group-item">
+    <div class="media">
+        <div class="media-left">
+            <a class="avatar avatar-online" href="javascript:void(0)">
+                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                <i></i>
+            </a>
+        </div>
+        <div class="media-body">
+            <small class="text-muted pull-right">@item.DataPublicacao</small>
+            <h4 class="media-heading">@item.applicationUser.UserName</h4>
+            <div class="div-imagemPost">
+                @Html.Raw(item.Texto)
+                 @if(item.Imagem != null)
+                    {
+
+                        <img class="img-responsive img-post"  src="~/uploads/imagens/posts/@item.Imagem" />
+
+                    }
+            </div>
+            <div class="col-md-12" id="botoesPost" style="margin-top: 20px;">
+                <div class="col-md-4 col-xs-4"><a class="comentar-r" data-postId="@item.Id" href="#"><i class="far fa-comment-dots"></i> <span id="quantidadeComentario-@item.Id" class="badge">@item.Comentarios.Count()</span> </a></div>
+                <div class="col-md-4 col-xs-4">
+                    <a class="curtir-r" data-postId="@item.Id" href="#">
+                        <i class="fas fa-heart"></i>
+                        <span class="badge quantidadecurtir-@item.Id" id="">@item.Curtida.Count()</span>
+                    </a>
+                </div>
+                <div class="col-md-4 col-xs-4"><a class="compartilhar" data-postId="@item.Id" href="#"><i class="fas fa-share-square"></i> </a></div>
+            </div>
+        </div>
+        <div id="comentarios-@item.Id">
+
+        </div>
+    </div>
+    <hr />
+</li>
+
+}
+
+    <script src="~/js/recarregarPost.js"></script>
+

@@ -12,6 +12,7 @@ namespace Win.Views.Manage
         public static string ActivePageKey => "ActivePage";
 
         public static string Index => "Index";
+        public static string Perfil => "Perfil";
 
         public static string ChangePassword => "ChangePassword";
 
@@ -20,6 +21,7 @@ namespace Win.Views.Manage
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
+        public static string PerfilNavClass(ViewContext viewContext) => PageNavClass(viewContext, Perfil);
 
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
 

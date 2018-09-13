@@ -9,6 +9,13 @@ namespace Win.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [MinLength(3, ErrorMessage ="O {0} Deve conter mais quer 2 letras." )]
+        public string Nome { get; set; }
+
+        [Required]
+        [MinLength(3, ErrorMessage = "O {0} Deve conter mais quer 2 letras.")]
+        public string SobreNome { get; set; }
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }

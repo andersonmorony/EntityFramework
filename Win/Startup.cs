@@ -11,6 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Win.Data;
 using Win.Models;
 using Win.Services;
+using Win.Interfaces.Services;
+using Win.Interfaces.Repository;
+using Win.Repository;
+using AutoMapper;
+using Win.ViewModels;
+using Win.Models.ManageViewModels;
 
 namespace Win
 {
@@ -35,6 +41,21 @@ namespace Win
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IFeedService, FeedService>();
+            services.AddTransient<IPostService, PostService>();
+            services.AddTransient<IUsuarioService, UsuarioService>();
+
+            // Add Application Repository
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<PostViewModel, Post>().ReverseMap();
+                config.CreateMap<ApplicationUser, Models.AccountViewModels.RegisterViewModel>().ReverseMap();
+                config.CreateMap<ApplicationUser, IndexViewModel>().ReverseMap();
+            });
 
             services.AddMvc();
         }

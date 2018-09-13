@@ -1,45 +1,89 @@
-﻿@model IndexViewModel
-@{
-    ViewData["Title"] = "Profile";
-    ViewData.AddActivePage(ManageNavPages.Index);
-}
+﻿@model Win.ViewModels.FeedViewModel
 
-<h4>@ViewData["Title"]</h4>
-@Html.Partial("_StatusMessage", Model.StatusMessage)
-<div class="row">
-    <div class="col-md-6">
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
+<div class="col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-body" style="padding: 5px">
             <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" disabled />
+                <form method="Post" enctype="multipart/form-data" id="posst-form" asp-action="Postar" asp-controller="Home">
+                    <textarea class="form-control" style="resize: none" rows="4" id="texto" placeholder="O que você esta pensando?" onfocus="onfocus"></textarea>
+                    <input type="hidden" id="imagemSelecionada" />
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                @if (Model.IsEmailConfirmed)
-                {
-                    <div class="input-group">
-                        <input asp-for="Email" class="form-control" />
-                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
-                    </div>
-                }
-                else
-                {
-                    <input asp-for="Email" class="form-control" />
-                    <button asp-action="SendVerificationEmail" class="btn btn-link">Send verification email</button>
-                }
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-default">Save</button>
-        </form>
+        </div>
+        <div class="panel-footer" style="background-color:#3ca2e0 ">
+            <button type="submit" id="enviar" class="btn btn-primary ladda-button pull-right btn-sm" data-style="zoom-in"><span class="ladda-label">Postar</span></button>
+            <ul class="nav nav-pills">
+
+                <li>
+                    <a href="#"><i class="fa fa-map-marker"></i></a>
+                </li>
+                <li>
+                    <a href="#">
+                        <label for="file">
+                            <i class="fa fa-camera"></i>
+                        </label>
+                    </a>
+                    <input type="file" id="file" name="file" />
+                </li>
+                <li>
+                    <a href="#"><i class=" fa fa-film"></i></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-microphone"></i></a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
+    @* Meus Posts *@
+    <div class="body-feed">
+        <ul class="list-group list-group-dividered list-group-full" id="conteudo">
+            @foreach (var item in Model.Posts)
+            {
 
-@section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+                <li class="list-group-item">
+                    <div class="media">
+                        <div class="media-left">
+                            <a class="avatar avatar-online" href="javascript:void(0)">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                                <i></i>
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <small class="text-muted pull-right">@item.DataPublicacao</small>
+                            <h4 class="media-heading">@item.applicationUser.UserName</h4>
+                            <div class="div-imagemPost">
+                                @Html.Raw(item.Texto)
+                                @if (item.Imagem != null)
+                                {
+
+                                    <img class="img-responsive img-post" src="~/uploads/imagens/posts/@item.Imagem" />
+
+                                }
+                            </div>
+                            <div class="col-md-12" id="botoesPost" style="margin-top: 20px;">
+                                <div class="col-md-4 col-xs-4"><a class="comentar" data-postId="@item.Id" href="#"><i class="far fa-comment-dots"></i> <span id="quantidadeComentario-@item.Id" class="badge">@(item.QuantidadeComentario.ToString() != "0" ? item.QuantidadeComentario.ToString() : "")</span> </a></div>
+                                <div class="col-md-4 col-xs-4">
+                                    <a class="curtir" data-postId="@item.Id" href="#">
+                                        <i class="fas fa-heart"></i>
+                                        <span class="badge quantidadecurtir-@item.Id" id="">@(item.QuantidadeCurtida.ToString() != "0" ? item.QuantidadeCurtida.ToString() : "")</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-4 col-xs-4"><a class="compartilhar" data-postId="@item.Id" href="#"><i class="fas fa-share-square"></i> </a></div>
+                            </div>
+                        </div>
+                        <div id="comentarios-@item.Id">
+
+                        </div>
+                    </div>
+                    <hr />
+                </li>
+            }
+        </ul>
+    </div>
+
+
+</div>
+@section Scripts{ 
+    <script src="~/js/MeuPerfil.js"></script>
 }

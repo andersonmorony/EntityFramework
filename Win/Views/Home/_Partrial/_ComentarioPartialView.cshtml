@@ -1,0 +1,71 @@
+﻿@model Win.ViewModels.PostViewModel
+
+
+<div class="input-group inp-comentario">
+    <input type="hidden" name="postID" value="@Model.Id" />
+    <textarea type="text" class="form-control ckeditor" rows="1" name="Texto" id="texto-@Model.Id" placeholder="Comente alguma coisa..."></textarea>
+    <span class="input-group-btn">
+        <button class="btn btn-primary ladda-button comentarpost" data-size="1" data-style="zoom-in" data-spinner-color="#FFF"
+                data-postid="@Model.Id" type="button">
+            <span class="ladda-label">Comentar</span>
+        </button>
+    </span>
+</div><!-- /input-group -->
+
+
+
+
+<div class="list-group col-md-10 col-md-offset-1">
+    @foreach (var item in Model.Comentarios)
+    {
+
+    <button class="list-group-item btn-visualizarpost"  data-target="#VisualizarPost" data-toggle="modal" data-postid="@item.Id" style="background-color: #efefef">
+        <div class="media">
+            <div class="media-left">
+                <a class="avatar avatar-online" href="javascript:void(0)">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                    <i></i>
+                </a>
+            </div>
+            <div class="media-body">
+                <small class="text-muted pull-right">@item.DataPublicacao</small>
+                <h4 class="media-heading">@item.applicationUser.UserName</h4>
+                <div>
+                    @Html.Raw(item.Texto)
+                </div>
+                <div class="col-md-12" id="botoesPost" style="margin-top: 20px;">
+                    <div class="col-md-4 col-xs-4"><a class="comentar" data-postId="@item.Id" href="#"><i class="far fa-comment-dots"></i> <span id="quantidadeComentario-@item.Id" class="badge">@item.Comentarios.Count()</span> </a></div>
+                    <div class="col-md-4 col-xs-4">
+                        <a class="curtir" data-postId="@item.Id" href="#">
+                            <i class="fas fa-heart"></i>
+                            <span class="badge quantidadecurtir-@item.Id" id="">@item.Curtida.Count()</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-xs-4"><a class="compartilhar" data-postId="@item.Id" href="#"><i class="fas fa-share-square"></i> </a></div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        </button>
+}
+</div>
+
+
+
+
+<script src="~/js/comentario.js"></script>
+<script></script>
+
+<style>
+    .inp-comentario {
+        margin-top: 15px;
+        margin-bottom: 25px;
+    }
+
+    .comentario-texto {
+        font-size: 12px;
+    }
+    /*.comentarpost:hover{
+        background-color: cornflowerblue !important;
+    }*/
+</style>

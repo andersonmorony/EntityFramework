@@ -15,6 +15,12 @@ namespace Win.Data
         {
         }
 
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Curtida> Curtidas { get; set; }
+        public DbSet<Descurtida> Discurtidas { get; set; }
+        public DbSet<ImagemPerfil> ImagemPerfils { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
